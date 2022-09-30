@@ -1,0 +1,10 @@
+class CreateProductInventories < ActiveRecord::Migration[7.0]
+  def change
+    create_table :product_inventories do |t|
+      t.integer :quantity
+      t.references :product_size, null: false, foreign_key: true
+
+      t.timestamps
+    end
+  end
+end

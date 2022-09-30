@@ -10,9 +10,51 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_24_124015) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_25_081429) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "product_categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "product_colors", force: :cascade do |t|
+    t.string "color"
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_colors_on_product_id"
+  end
+
+  create_table "product_inventories", force: :cascade do |t|
+    t.integer "quantity"
+    t.bigint "product_size_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_size_id"], name: "index_product_inventories_on_product_size_id"
+  end
+
+  create_table "product_sizes", force: :cascade do |t|
+    t.integer "size"
+    t.bigint "product_color_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_color_id"], name: "index_product_sizes_on_product_color_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "composition"
+    t.string "maintenance"
+    t.integer "price"
+    t.bigint "product_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_category_id"], name: "index_products_on_product_category_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,4 +68,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_24_124015) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "product_colors", "products"
+  add_foreign_key "product_inventories", "product_sizes"
+  add_foreign_key "product_sizes", "product_colors"
+  add_foreign_key "products", "product_categories"
 end
